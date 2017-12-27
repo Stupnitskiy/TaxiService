@@ -2,3 +2,4 @@ This is a GIT repository for taxi service.
 Technologies: 
 	- Flask
 	- Python 3.6
+	- PostgreSQL
