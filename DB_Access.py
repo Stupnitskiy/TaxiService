@@ -1,11 +1,10 @@
 import sqlalchemy
-from sqlalchemy import Table, Column, Integer, String, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, Boolean
 
 # Connect with your PostgreSQL
 USER = 'postgres'
 PASSWORD = 'password'
 DB = 'my_database'
-
 
 def connect(user, password, db, host='localhost', port=5432):
     '''Returns a connection and a metadata object'''
@@ -16,6 +15,7 @@ def connect(user, password, db, host='localhost', port=5432):
 
     # The return value of create_engine() is our connection object
     engine = sqlalchemy.create_engine(url, client_encoding='utf8')
+
     con = engine.connect()
     #con = sqlalchemy.create_engine(url, client_encoding='utf8')
 
@@ -34,7 +34,8 @@ def create_tables():
     users = Table('users', meta,
         Column('id', Integer, primary_key=True),
         Column('login', String),
-        Column('password', String)
+        Column('password', String),
+        Column('isadmin', Boolean)
     )
 
     # Create the above tables
@@ -46,35 +47,41 @@ def delete_tables():
     con = connect(USER, PASSWORD, DB)
     con.execute("drop table users")
     con.execute("drop table orders")
+    con.close()
 
 def insert_in_users(insertion):
     con = connect(USER, PASSWORD, DB)
 
-    con.execute("insert into users(login, password) values (%s, %s)" % \
-    (insertion[0], insertion[1]))
+    con.execute("insert into users(login, password, isadmin) values ('%s', '%s', %s)" % (insertion[0], insertion[1], insertion[2]))
 
     con.close()
 
 def insert_in_orders(insertion):
     con = connect(USER, PASSWORD, DB)
 
-    con.execute("insert into orders(number, destination) values (%s, %s)" % \
-    (insertion[0], insertion[1]))
+    con.execute("insert into orders(number, destination) values ('%s', '%s')" \
+    % (insertion[0], insertion[1]))
 
     con.close()
 
-def select_all(table):
+def find_user(login, password):
     con = connect(USER, PASSWORD, DB)
 
-    result = con.execute("select * from %s" % table)
-    for row in result:
-        print(row)
+    return con.execute("select * from users where (login='%s') and \
+    (password='%s')" % (login, password)).fetchall()
 
     con.close()
 
-delete_tables()
-create_tables()
-insert_in_users(["'Dimitry'", "'456'"])
-insert_in_orders(["'097-8888888'", "'ул. Красноармейская, 22'"])
-select_all('orders')
-select_all('users')
+def find_orders():
+    con = connect(USER, PASSWORD, DB)
+
+    return con.execute("select * from orders").fetchall()
+
+    con.close()
+
+#delete_tables()
+#create_tables()
+#insert_in_users(["Dimitry", "456", True])
+#insert_in_orders(["097-8888888", "ул. Красноармейская, 22"])
+#select_all("orders")
+#select_all("users")
