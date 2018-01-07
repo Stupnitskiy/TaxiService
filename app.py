@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request
-from jinja2 import Template
+from flask import Flask, render_template, request, make_response, redirect, url_for
+from flask_redis import FlaskRedis
 from DB_Access import *
 
 app = Flask(__name__)
+redis_store = FlaskRedis(app)
+SessionList = []
 
 @app.route("/", methods=['GET', 'POST'])
 def orderPage():
@@ -11,22 +13,58 @@ def orderPage():
 
     return render_template('main.html')
 
-@app.route("/orders", methods=['GET', 'POST'])
-def orderListPage():
+@app.route("/login", methods=['GET', 'POST'])
+def loginPage():
+    if request.method == 'GET' and isLogged(request):
+        return redirect('/admin')
+
     if request.method == 'POST':
         result = find_user(request.form['login'], request.form['password'])
         if not result:
             print("User not found")
         else:
-            _orders = find_orders()
-            return render_template('orders_page.html', orders=_orders)
+            #return render_template('orders_page.html', orders=_orders)
+            resp = make_response(redirect('/admin'))
+            resp.set_cookie('username', request.form['login'])
+            redis_store.setex(request.form['login'], 60, request.form['login'])
+            return resp
 
     return render_template('login_page.html')
 
-@app.route("/yes")
-def yes():
-    return "yes"
+@app.route("/admin")
+def orderListPage():
+    if request.method == 'POST':
+        redis_store.delete(request.cookies.get('username'))
+
+    if request.method == 'GET' and not isLogged(request):
+        return redirect('/login')
+
+    _orders = find_orders()
+    return render_template('orders_page.html', orders=_orders)
+
+@app.route("/unlog")
+def unlog():
+    redis_store.delete(request.cookies.get('username'))
+    return redirect('/')
+
+@app.route("/test")
+def test():
+    #redis_store.set('key', 'value')
+    #redis_store.expire('key', 1000)
+    print(redis_store.ttl('key'))
+    return redis_store.get('key')
+
+def isLogged(request):
+    try:
+        username = request.cookies.get('username')
+        if redis_store.get(username).decode("utf-8")  == username:
+            return True
+    except:
+        print("Not logged")
+
+    return False
 
 if __name__ == "__main__":
+    #REDIS_URL = "redis://:password@localhost:6379/0"
     app.config['DEBUG'] = True
     app.run(port=8000)
