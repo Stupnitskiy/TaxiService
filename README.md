@@ -7,7 +7,7 @@ Technologies:
 
 Application was developed using virtual environment and should be launched with it. For work you need to create PostgreSQL user and database (or use existing one), and install Redis server ([Redis quickstart](https://redis.io/topics/quickstart)). 
 
-####Type your user and db in DB_Access file:
+### Type your user and db in DB_Access file:
 
 
 ```python
