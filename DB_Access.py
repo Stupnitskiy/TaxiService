@@ -79,9 +79,26 @@ def find_orders():
 
     con.close()
 
-#delete_tables()
-#create_tables()
-#insert_in_users(["Dimitry", "456", True])
-#insert_in_orders(["097-8888888", "ул. Красноармейская, 22"])
-#select_all("orders")
-#select_all("users")
+def isAdmin(request):
+    con = connect(USER, PASSWORD, DB)
+
+    username = request.cookies.get('username')
+    result = con.execute("select * from users where (login='%s') and \
+    (isadmin='t')" % (username)).fetchone()
+
+    con.close()
+
+    if result:
+        print('isAdmin')
+        return True
+    print('not isAdmin')
+    return False
+
+try:
+    #delete_tables()
+    create_tables()
+    insert_in_users(["admin", "admin", True])
+    insert_in_users(["user", "user", False])
+    insert_in_orders(["+380971234567", "ул. Красноармейская, 22"])
+except:
+    print("Oops, i know, app starts a lot of time")

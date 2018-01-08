@@ -4,7 +4,6 @@ from DB_Access import *
 
 app = Flask(__name__)
 redis_store = FlaskRedis(app)
-SessionList = []
 
 @app.route("/", methods=['GET', 'POST'])
 def orderPage():
@@ -36,23 +35,19 @@ def orderListPage():
     if request.method == 'POST':
         redis_store.delete(request.cookies.get('username'))
 
-    if request.method == 'GET' and not isLogged(request):
+    if request.method == 'GET' and isLogged(request):
+        _orders = find_orders()
+        if isAdmin(request):
+            return render_template('orders_page.html', orders=_orders)
+        return render_template('orders_page.html')
+    else:
         return redirect('/login')
-
-    _orders = find_orders()
-    return render_template('orders_page.html', orders=_orders)
 
 @app.route("/unlog")
 def unlog():
     redis_store.delete(request.cookies.get('username'))
     return redirect('/')
 
-@app.route("/test")
-def test():
-    #redis_store.set('key', 'value')
-    #redis_store.expire('key', 1000)
-    print(redis_store.ttl('key'))
-    return redis_store.get('key')
 
 def isLogged(request):
     try:
@@ -63,6 +58,7 @@ def isLogged(request):
         print("Not logged")
 
     return False
+
 
 if __name__ == "__main__":
     #REDIS_URL = "redis://:password@localhost:6379/0"
