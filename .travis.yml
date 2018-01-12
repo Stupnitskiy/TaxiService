@@ -15,8 +15,7 @@
     - FLASK=0.12.2
 
   before_script:
-    - psql -c 'create user Postgres with password password;'
-    - psql -c 'create database my_test_database;' Postgres
+    - psql -c 'create database my_test_database;' postgres
 
   script:
     - pytest
