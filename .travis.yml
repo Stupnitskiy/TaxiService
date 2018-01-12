@@ -18,4 +18,4 @@
     - psql -c 'create database my_test_database;' postgres
 
   script:
-    - pytest
+    - python -m pytest

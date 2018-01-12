@@ -1,0 +1,5 @@
+{
+  "test_case.py::TestCase": true,
+  "tests.py": true,
+  "tests/test_case.py": true
+}
