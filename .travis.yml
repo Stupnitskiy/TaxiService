@@ -16,6 +16,7 @@
 
   before_script:
     - psql -c 'create database my_test_database;' postgres
+    - psql -c 'create database my_database;' postgres
 
   script:
     - python -m pytest
