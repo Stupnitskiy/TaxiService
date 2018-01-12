@@ -25,3 +25,11 @@ DB = 'my_database'
 ```
 $ redis-server
 ```
+
+### Start virtual environment:
+
+```
+$ cd ~/path/to/app_root
+$ . venv/bin/activate
+$ python app.py
+```
