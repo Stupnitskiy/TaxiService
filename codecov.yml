@@ -1,0 +1,3 @@
+ignore:
+  - "venv"  # ignore folders and all its contents
+  - "__init__.py"       # wildcards accepted
