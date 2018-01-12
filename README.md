@@ -1,4 +1,9 @@
-[![Build Status](https://travis-ci.org/Stupnitskiy/TaxiService.svg?branch=master)](https://travis-ci.org/Stupnitskiy/TaxiService)
+|   Project status|  |
+| ------------- |:-------------|
+| Build status  | [![Build Status](https://travis-ci.org/Stupnitskiy/TaxiService.svg?branch=master)](https://travis-ci.org/Stupnitskiy/TaxiService) |
+| Project Certification     |[![Codacy Badge](https://api.codacy.com/project/badge/Grade/96ca3fb17fe64e7186207069ef76c04d)](https://www.codacy.com/app/Stupnitskiy/TaxiService?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Stupnitskiy/TaxiService&amp;utm_campaign=Badge_Grade)    |
+| Code coverage | [![codecov](https://codecov.io/gh/Stupnitskiy/TaxiService/branch/master/graph/badge.svg)](https://codecov.io/gh/Stupnitskiy/TaxiService)      |
+
 
 
 This is a GIT repository for taxi service.
