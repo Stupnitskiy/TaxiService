@@ -1,104 +1,104 @@
 import sqlalchemy
-from sqlalchemy import Table, Column, Integer, String, Boolean
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
 
 # Connect with your PostgreSQL
 USER = 'postgres'
 PASSWORD = 'password'
 DB = 'my_database'
 
-def connect(user, password, db, host='localhost', port=5432):
-    '''Returns a connection and a metadata object'''
-    # We connect with the help of the PostgreSQL URL
-    # postgresql://federer:grandestslam@localhost:5432/tennis
-    url = 'postgresql://{}:{}@{}:{}/{}'
-    url = url.format(user, password, host, port, db)
+Base = declarative_base()
+from models import User, Order
 
-    # The return value of create_engine() is our connection object
-    engine = sqlalchemy.create_engine(url, client_encoding='utf8')
+Engine = sqlalchemy.create_engine('postgresql://{}:{}@localhost:5432/{}'\
+.format(USER, PASSWORD, DB), client_encoding='utf8')
 
-    con = engine.connect()
-    #con = sqlalchemy.create_engine(url, client_encoding='utf8')
-
-    return con
+Session = sessionmaker(bind = Engine)
 
 def create_tables():
-    con = connect(USER, PASSWORD, DB)
-    meta = sqlalchemy.MetaData(bind=con, reflect=True)
-
-    orders = Table('orders', meta,
-        Column('id', Integer, primary_key=True),
-        Column('number', String),
-        Column('destination', String)
-    )
-
-    users = Table('users', meta,
-        Column('id', Integer, primary_key=True),
-        Column('login', String),
-        Column('password', String),
-        Column('isadmin', Boolean)
-    )
-
     # Create the above tables
-    meta.create_all(con)
-    con.close()
-    del meta
+    Base.metadata.create_all(Engine)
 
 def delete_tables():
-    con = connect(USER, PASSWORD, DB)
-    con.execute("drop table users")
-    con.execute("drop table orders")
-    con.close()
+    session = Session()
+
+    User.__table__.drop(Engine)
+    Order.__table__.drop(Engine)
+
+    session.commit()
+    session.close()
 
 def insert_in_users(insertion):
-    con = connect(USER, PASSWORD, DB)
+    session = Session()
 
-    con.execute("insert into users(login, password, isadmin) values ('%s', '%s', %s)" % (insertion[0], insertion[1], insertion[2]))
+    new_user = User(insertion[0], insertion[1], insertion[2])
+    session.add(new_user)
 
-    con.close()
+    session.commit()
+    session.close()
 
 def insert_in_orders(insertion):
-    con = connect(USER, PASSWORD, DB)
+    session = Session()
 
-    con.execute("insert into orders(number, destination) values ('%s', '%s')" \
-    % (insertion[0], insertion[1]))
+    new_order = Order(insertion[0], insertion[1])
+    session.add(new_order)
 
-    con.close()
+    session.commit()
+    session.close()
 
-def find_user(login, password):
-    con = connect(USER, PASSWORD, DB)
+def find_user(_login, _password):
+    session = Session()
 
-    return con.execute("select * from users where (login='%s') and \
-    (password='%s')" % (login, password)).fetchall()
+    user = session.query(User).filter_by(login=_login, password=_password)\
+    .first()
 
-    con.close()
+    session.commit()
+    session.close()
+    return user
 
 def find_orders():
-    con = connect(USER, PASSWORD, DB)
+    session = Session()
 
-    return con.execute("select * from orders").fetchall()
+    result = []
+    orders = session.query(Order).all()
+    for order in orders:
+        result.append([order.id, order.number, order.destination])
 
-    con.close()
+    session.commit()
+    session.close()
+    return result
 
 def isAdmin(request):
-    con = connect(USER, PASSWORD, DB)
+    session = Session()
 
     username = request.cookies.get('username')
-    result = con.execute("select * from users where (login='%s') and \
-    (isadmin='t')" % (username)).fetchone()
+    user = session.query(User).filter_by(login=username, isadmin=True)\
+    .first()
 
-    con.close()
+    session.commit()
+    session.close()
 
-    if result:
-        print('isAdmin')
-        return True
-    print('not isAdmin')
-    return False
+    if user is None:
+        print('not isAdmin')
+        return False
+    print('isAdmin')
+    return True
 
-try:
+
+#try:
     #delete_tables()
-    create_tables()
-    insert_in_users(["admin", "admin", True])
-    insert_in_users(["user", "user", False])
-    insert_in_orders(["+380971234567", "ул. Красноармейская, 22"])
-except:
-    print("Oops, i know, app starts a lot of time")
+    #create_tables()
+    #session = Session()
+    #admin = User('admin', 'admin', True)
+    #user = User('user', 'user', False)
+    #order = Order('+380971234567', 'Come here, dude')
+    #session.add(user)
+    #session.add(admin)
+    #session.add(order)
+    #session.commit()
+    #insert_in_users(["admin", "admin", True])
+    #insert_in_users(["user", "user", False])
+    #insert_in_orders(["+380971234567", "ул. Красноармейская, 22"])
+#except:
+    #print("Oops, i know, app starts a lot of time")

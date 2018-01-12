@@ -21,6 +21,7 @@ def loginPage():
         result = find_user(request.form['login'], request.form['password'])
         if not result:
             print("User not found")
+            return make_response('User not found')
         else:
             #return render_template('orders_page.html', orders=_orders)
             resp = make_response(redirect('/admin'))
@@ -43,10 +44,15 @@ def orderListPage():
     else:
         return redirect('/login')
 
-@app.route("/unlog")
-def unlog():
+@app.route("/logout")
+def logout():
     redis_store.delete(request.cookies.get('username'))
     return redirect('/')
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 
 def isLogged(request):
@@ -62,5 +68,6 @@ def isLogged(request):
 
 if __name__ == "__main__":
     #REDIS_URL = "redis://:password@localhost:6379/0"
+
     app.config['DEBUG'] = True
     app.run(port=8000)

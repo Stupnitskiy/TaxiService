@@ -19,3 +19,9 @@ USER = 'postgres'
 PASSWORD = 'password'
 DB = 'my_database'
 ```
+
+### Run Redis server:
+
+```
+$ redis-server
+```
