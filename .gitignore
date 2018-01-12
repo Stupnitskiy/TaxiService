@@ -1,2 +1,6 @@
 /.hg/*
 /.hgignore
+/.cache
+/__pycache__/*
+/liquibase/*
+/htmlcov/*
