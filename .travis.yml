@@ -2,10 +2,11 @@
 
   python:
     - "3.6"
-    - "2.7"
+    - "3.5"
 
   install:
     - pip install -r requirements.txt
+    - pip install codecov
 
   services:
     - redis
@@ -20,3 +21,7 @@
 
   script:
     - python -m pytest
+    - coverage run test_case.py
+
+  after_success:
+    - codecov

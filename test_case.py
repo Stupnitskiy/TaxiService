@@ -1,7 +1,7 @@
 
 import unittest
 
-from app import app
+from app import app, redis_store
 import sqlalchemy
 from models import User, Order
 from DB_Access import *
@@ -35,6 +35,12 @@ class TestCase(unittest.TestCase):
             follow_redirects=True
         )
 
+    def admin(self):
+        return self.app.get(
+            '/admin',
+            follow_redirects=True
+        )
+
     def test_insert_and_find_order(self):
         insert_in_orders(['+380971234567', 'Any street'])
         order = find_orders()
@@ -44,6 +50,12 @@ class TestCase(unittest.TestCase):
         insert_in_users(['admin', 'admins', True])
         user = find_user('admin', 'admin')
         assert user is None
+
+    def test_login(self):
+        insert_in_users(['admin', 'admin', False])
+        self.login('admin', 'admin')
+        response = self.admin()
+        assert redis_store.get('login') is None
 
 
 if __name__ == '__main__':
