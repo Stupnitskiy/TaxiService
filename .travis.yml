@@ -1,0 +1,27 @@
+  language: python
+
+  virtualenv:
+    system_site_packages: true
+
+  python:
+    - "3.6"
+    - "3.5"
+
+  install:
+    - pip install -r requirements.txt
+
+  services:
+    - redis
+
+  env:
+    - FLASK=0.10.1
+    - FLASK=0.9
+    - FLASK=0.8.1
+    - FLASK=0.7.2
+
+  before_script:
+    - psql -c 'create user Postgres with password password;'
+    - psql -c 'create database my_test_database;' Postgres
+
+  script:
+    - pytest
