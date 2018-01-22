@@ -4,8 +4,8 @@ from sqlalchemy.orm import sessionmaker
 
 
 # Connect with your PostgreSQL
-USER = 'postgres'
-PASSWORD = 'password'
+USER = 'test_user'
+PASSWORD = 'qwerty'
 DB = 'my_database'
 
 Base = declarative_base()
@@ -86,19 +86,19 @@ def isAdmin(request):
     return True
 
 
-#try:
+try:
     #delete_tables()
-    #create_tables()
-    #session = Session()
-    #admin = User('admin', 'admin', True)
-    #user = User('user', 'user', False)
-    #order = Order('+380971234567', 'Come here, dude')
-    #session.add(user)
-    #session.add(admin)
-    #session.add(order)
-    #session.commit()
+    create_tables()
+    session = Session()
+    admin = User('admin', 'admin', True)
+    user = User('user', 'user', False)
+    order = Order('+380971234567', 'Come here, dude')
+    session.add(user)
+    session.add(admin)
+    session.add(order)
+    session.commit()
     #insert_in_users(["admin", "admin", True])
     #insert_in_users(["user", "user", False])
     #insert_in_orders(["+380971234567", "ул. Красноармейская, 22"])
-#except:
-    #print("Oops, i know, app starts a lot of time")
+except:
+    print("Oops, i know, app starts a lot of time")
