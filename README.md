@@ -1,9 +1,3 @@
-|   Project status|  |
-| ------------- |:-------------|
-| Build status  | [![Build Status](https://travis-ci.org/Stupnitskiy/TaxiService.svg?branch=master)](https://travis-ci.org/Stupnitskiy/TaxiService) |
-| Project Certification     |[![Codacy Badge](https://api.codacy.com/project/badge/Grade/96ca3fb17fe64e7186207069ef76c04d)](https://www.codacy.com/app/Stupnitskiy/TaxiService?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Stupnitskiy/TaxiService&amp;utm_campaign=Badge_Grade)    |
-| Code coverage | [![codecov](https://codecov.io/gh/Stupnitskiy/TaxiService/branch/master/graph/badge.svg)](https://codecov.io/gh/Stupnitskiy/TaxiService)      |
-
 
 
 This is a GIT repository for taxi service.
@@ -15,9 +9,22 @@ Technologies:
 
 Application was developed using virtual environment and should be launched with it. For work you need to create PostgreSQL user and database (or use existing one), and install Redis server ([Redis quickstart](https://redis.io/topics/quickstart)).
 
+
+### Confiure new virtual environment:
+Type it to create venv, that works with Python 3.6:
+```
+$ cd ~/path/to/app_root
+~/path/to/app_root$ virtualenv -p python3.6 venv
+```
+
+Then you need to activate venv and install into some libraries, enumerated in req.txt:
+```
+~/path/to/app_root$ . venv/bin/activate
+(venv)...~/path/to/app_root$ pip install -r req.txt
+```
+
+
 ### Type your user and db in DB_Access file:
-
-
 ```python
 import sqlalchemy
 from sqlalchemy import Table, Column, Integer, String, Boolean
@@ -28,16 +35,13 @@ PASSWORD = 'password'
 DB = 'my_database'
 ```
 
-### Run Redis server:
-
+### Install/Run Redis server:
 ```
+$ sudo apt install -y redis-server
 $ redis-server
 ```
 
-### Start virtual environment:
-
+### Start application:
 ```
-$ cd ~/path/to/app_root
-$ . venv/bin/activate
-$ python app.py
+(venv)...~/path/to/app_root$ python app.py
 ```
