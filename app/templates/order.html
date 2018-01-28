@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Order{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block active %}
+  <li class="active"><a href="/">Order</a></li>
+  <li><a href="/login">Login</a></li>
+  <li><a href="/admin">Admin</a></li>
+{% endblock %}
+
+{% block nav %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+<form class="col-md-9" method="post">
+   <div class="form-group">
+      <label>Номер телефона (Пример: +380971234567):</label>
+     <input required type="tel" class="form-control" name="phoneNumber" placeholder="Телефон" pattern="[\+]\d{12}"/>
+   </div>
+   <div class="form-group">
+      <label >Куда ехать:</label>
+      <input required type="text" class="form-control" name="Adress" placeholder="Крещатик 12, город Киев">
+   </div>
+   <button type="submit" class="btn btn-default">Отправить</button>
+</form>
+{% endblock %}

@@ -24,11 +24,8 @@ Then you need to activate venv and install into some libraries, enumerated in re
 ```
 
 
-### Type your user and db in DB_Access file:
+### Type your user and db in config_database.py file:
 ```python
-import sqlalchemy
-from sqlalchemy import Table, Column, Integer, String, Boolean
-
 # Connect with your PostgreSQL
 USER = 'postgres'
 PASSWORD = 'password'
@@ -41,7 +38,8 @@ $ sudo apt install -y redis-server
 $ redis-server
 ```
 
-### Start application:
+### Start application with dev config:
 ```
-(venv)...~/path/to/app_root$ python app.py
+~/path/to/app_root$ ./run.py
+
 ```
