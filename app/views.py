@@ -1,59 +1,52 @@
-from flask import render_template, request, make_response, redirect
-from app import app, redis_store, session
+from flask import render_template, request, make_response, redirect, session
+from flask.views import MethodView
+from app import app, redis_store
 from app.models import User, Order
+import app.controller as ctr
 
 
+class OrderAPI(MethodView):
 
-@app.route("/", methods=['POST'])
-def orderAdd():
+    def get(self):
+        return render_template('order.html')
 
-    new_order = Order(request.form['phoneNumber'], request.form['Adress'])
-    session.add(new_order)
-    return render_template('order.html')
+    def post(self):
+        ctr.order_add(request.form['phoneNumber'], request.form['Adress'])
+        return redirect('/')
 
-
-@app.route("/", methods=['GET'])
-def orderPage():
-
-    return render_template('order.html')
+order_view = OrderAPI.as_view('order_api')
+app.add_url_rule('/', view_func=order_view, methods=['GET'])
+app.add_url_rule('/api/order/add', view_func=order_view, methods=['POST'])
 
 
 @app.route("/login", methods=['POST'])
-def logginIn():
+def login():
 
-    user = session.query(User).filter_by(login=request.form['login'], \
-    password=request.form['password']).first()
+    user = ctr.get_user(request.form['login'], request.form['password'])
     if not user:
-        print("User not found")
-    else:
-        #return render_template('orders_page.html', orders=_orders)
-        resp = make_response(redirect('/admin'))
-        resp.set_cookie('username', request.form['login'])
-        redis_store.setex(request.form['login'], 60, request.form['login'])
-        return resp
+        return redirect('/login')
 
+    session['username'] = request.form['login']
+    redis_store.setex(request.form['login'], 60, request.form['login'])
     return redirect('/admin')
 
 
 @app.route("/login", methods=['GET'])
-def loginPage():
+def login_page():
 
-    if isLogged(request):
+    if is_logged(request):
         return redirect('/admin')
     return render_template('login.html')
 
 
 @app.route("/admin")
-def orderListPage():
+def orderlist_page():
 
-    if isLogged(request):
-        listOfOrders = []
-        orders = session.query(Order).all()
-        for order in orders:
-            listOfOrders.append([order.id, order.number, order.destination])
+    if is_logged(request):
+        list_of_orders = ctr.get_orders()
 
-        if isAdmin(request):
-            return render_template('admin.html', orders=listOfOrders)
+        if is_admin(request):
+            return render_template('admin.html', orders=list_of_orders)
         return render_template('admin.html')
     else:
         return redirect('/login')
@@ -62,32 +55,24 @@ def orderListPage():
 @app.route("/logout")
 def logout():
 
-    redis_store.delete(request.cookies.get('username'))
+    redis_store.delete(session.get('username'))
+    session.pop('username')
     return redirect('/')
 
 
-def isLogged(request):
+def is_logged(request):
 
-    try:
-        username = request.cookies.get('username')
-        if redis_store.get(username).decode("utf-8")  == username:
-            return True
-    except:
-        print("Not logged")
-
+    username = session.get('username')
+    if username and redis_store.get(username):
+        return True
     return False
 
 
-def isAdmin(request):
+def is_admin(request):
 
-    username = request.cookies.get('username')
-    user = session.query(User).filter_by(login=username, isadmin=True)\
-    .first()
-
-
+    username = session.get('username')
+    user = ctr.is_admin(username)
 
     if user is None:
-        print('not isAdmin')
         return False
-    print('isAdmin')
     return True

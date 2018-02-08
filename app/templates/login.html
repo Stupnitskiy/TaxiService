@@ -18,27 +18,12 @@
 <form class="col-md-9" method="post">
   <div class="form-group">
       <label>Логин:</label>
-      <input required type="text" class="form-control" name="login" placeholder="Введите свой логин"/>
+      <input required type="text" maxlength="24" class="form-control" name="login" placeholder="Введите свой логин"/>
   </div>
     <div class="form-group">
       <label >Пароль</label>
-      <input required type="password" class="form-control" name="password" placeholder="Пароль">
+      <input required type="password" maxlength="16" class="form-control" name="password" placeholder="Пароль">
     </div>
     <button type="submit" class="btn btn-default">Войти</button>
 </form>
 {% endblock %}
-
-
-
-
-<form class="col-md-9" method="post">
-  <div class="form-group">
-      <label>Логин:</label>
-      <input required type="text" class="form-control" name="login" placeholder="Введите свой логин"/>
-  </div>
-    <div class="form-group">
-      <label >Пароль</label>
-      <input required type="password" class="form-control" name="password" placeholder="Пароль">
-    </div>
-    <button type="submit" class="btn btn-default">Войти</button>
-</form>

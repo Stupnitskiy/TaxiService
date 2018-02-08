@@ -15,14 +15,14 @@
 {% endblock %}
 
 {% block content %}
-<form class="col-md-9" method="post">
+<form class="col-md-9" method="post" action="/api/order/add">
    <div class="form-group">
       <label>Номер телефона (Пример: +380971234567):</label>
      <input required type="tel" class="form-control" name="phoneNumber" placeholder="Телефон" pattern="[\+]\d{12}"/>
    </div>
    <div class="form-group">
       <label >Куда ехать:</label>
-      <input required type="text" class="form-control" name="Adress" placeholder="Крещатик 12, город Киев">
+      <input required type="text" maxlength="200" class="form-control" name="Adress" placeholder="Крещатик 12, город Киев">
    </div>
    <button type="submit" class="btn btn-default">Отправить</button>
 </form>

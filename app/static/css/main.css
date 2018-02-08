@@ -1,6 +1,10 @@
 body {
 	padding-top: 20px;
 	background-color:#fafafa;
+}
+
+.nav-hight {
+	height: 310px
 }	
 
 .nav-right {
