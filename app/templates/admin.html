@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block active %}
-  <li><a href="/">Order</a></li>
-  <li><a href="/login">Login</a></li>
-  <li class="active"><a href="/admin">Admin</a></li>
+  <li><a href="{{ url_for('order_api') }}">Order</a></li>
+  <li><a href="{{ url_for('login_page') }}">Login</a></li>
+  <li class="active"><a href="{{ url_for('orderlist_page') }}">Admin</a></li>
 {% endblock %}
 
 {% block nav %}
@@ -27,11 +27,11 @@
     <tbody>
       {% for order in orders %}
       <tr>
-        {% for row in order %}
-         <td>{{ row }}</th>
-        {% endfor %}
-     </tr>
-   {% endfor %}
+          <td>{{ order.id }}</th>
+          <td>{{ order.number }}</th>
+          <td>{{ order.destination }}</th>
+      </tr>
+      {% endfor %}
    </tbody>
  </table>
 </div>

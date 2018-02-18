@@ -14,6 +14,7 @@ base = declarative_base()
 from config import DB_URI
 engine = create_engine(DB_URI, client_encoding='utf8')
 
-session = sessionmaker(bind = engine)
+Session = sessionmaker(bind = engine)
+session = Session()
 
 from app import views, models

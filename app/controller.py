@@ -1,49 +1,38 @@
 from app import session
 from app.models import User, Order
 
-def safe_session(function):
 
-    def wrapped(*args, **kwargs):
-        temp_session = session()
-        result = function(temp_session, *args, **kwargs)
-        temp_session.commit()
-        temp_session.close()
-        return result
-    return wrapped
-
-
-@safe_session
-def order_add(session, number, adress):
+def order_add(number, adress):
 
     new_order = Order(number, adress)
     session.add(new_order)
+    session.commit()
+    return new_order
 
 
-@safe_session
-def user_add(session, username, password, is_admin):
+def user_add(username, password, is_admin):
 
     new_user = User(username, password, is_admin)
     session.add(new_user)
+    session.commit()
+    return new_user
 
 
-@safe_session
-def get_orders(session):
+def get_orders():
 
     orders = session.query(Order).all()
-    list_of_orders = []
-    for order in orders:
-        list_of_orders.append([order.id, order.number, order.destination])
-
-    return list_of_orders
+    return orders
 
 
-@safe_session
-def get_user(session, log, passw):
+def get_user(username, passw):
 
-    return session.query(User).filter_by(login = log, password = passw).first()
+    return session.query(User).filter(
+        User.login == username, User.password == passw
+    ).one_or_none()
 
 
-@safe_session
-def is_admin(session, username):
+def is_admin(username):
 
-    return session.query(User).filter_by(login=username, isadmin=True).first()
+    return session.query(User).filter(
+        User.login == username, User.isadmin == True
+    ).one_or_none()

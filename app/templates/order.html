@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block active %}
-  <li class="active"><a href="/">Order</a></li>
-  <li><a href="/login">Login</a></li>
-  <li><a href="/admin">Admin</a></li>
+<li class="active"><a href="{{ url_for('order_api') }}">Order</a></li>
+<li><a href="{{ url_for('login_page') }}">Login</a></li>
+<li><a href="{{ url_for('orderlist_page') }}">Admin</a></li>
 {% endblock %}
 
 {% block nav %}
